@@ -1,0 +1,3 @@
+copiare nella cartella i driver di database ( jar files ) ad esempio per oracle
+copiare .....
+

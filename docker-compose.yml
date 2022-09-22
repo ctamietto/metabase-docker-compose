@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+
+  metabase-postgres:
+    container_name: metabase-postgres
+    image: postgres:14
+    volumes:
+      - metabase-postgres-data-vol:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: metabase
+      POSTGRES_USER: metabase_usr
+      POSTGRES_PASSWORD: metabase_usr
+    networks:
+      metabase-net:
+
+
+  metabase:
+    container_name: metabase
+    depends_on:
+      - metabase-postgres
+    image: metabase/metabase
+    volumes: 
+      - ./plugins:/plugins:rw
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      JAVA_TIMEZONE: Europe/Rome
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: 5432
+      MB_DB_USER: metabase_usr
+      MB_DB_PASS: metabase_usr
+      MB_DB_HOST: metabase-postgres
+    networks:
+      metabase-net:
+
+networks:
+  metabase-net:
+    name: metabase-net
+
+volumes:
+  metabase-postgres-data-vol:
+    name: metabase-postgres-data-vol
